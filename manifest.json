@@ -11,6 +11,11 @@
       "scripting"
     ],
 
+    "host_permissions": [
+      "*://localhost/*",
+      "*://127.0.0.1/*"
+    ],
+
     "icons": {
         "16": "/pictures/icon.png",
         "32":"/pictures/icon.png",
@@ -23,7 +28,9 @@
         {
             "js": ["/dist/bundle.js"],
             "matches": [
-                "<all_urls>"
+                "<all_urls>",
+                "http://localhost/*",
+                "http://127.0.0.1/*"
             ]
         }
     ], 
@@ -37,7 +44,7 @@
       "resources": [
         "pictures/*"
       ],
-      "matches": ["<all_urls>"]
+      "matches": ["<all_urls>", "*://localhost/*", "*://127.0.0.1/*"]
   
     }
     ]

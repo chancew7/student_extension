@@ -1,5 +1,5 @@
 
-import {Car} from '../scripts/car';
+import {Car} from '../../scripts/car';
 
 
 describe('Car class', () => {
