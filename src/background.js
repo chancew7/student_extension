@@ -11,7 +11,7 @@ chrome.runtime.onInstalled.addListener(() => {
         contexts: ["selection"]
     });
     chrome.contextMenus.create({
-        id: "textstyle",
+        id: ActionType.TEXTSTYLE,
         title: "Textstyle",
         contexts: ["selection"]
     });
@@ -21,13 +21,14 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.contextMenus.onClicked.addListener((info, tab) => {
     if (info.menuItemId === ActionType.HIGHLIGHT){
         chrome.tabs.sendMessage(tab.id, {
-            action: "highlight",
+            action: ActionType.HIGHLIGHT,
             highlightColor: "yellow"
         });
     }
-    else if (info.menuItemId === "textstyle"){
+    else if (info.menuItemId === ActionType.TEXTSTYLE){
         chrome.tabs.sendMessage(tab.id, {
-            action: "textstyle",
+            action: ActionType.TEXTSTYLE,
+            textstyleType: TextstyleType.BOLD
 
         });
     }

@@ -27,7 +27,7 @@
 
     "content_scripts" : [
         {
-            "js": ["dist/bundle.js"],
+            "js": ["dist/content.bundle.js"],
             "matches": [
                 "<all_urls>",
                 "http://localhost/*",

@@ -5,7 +5,6 @@ import { TextstyleType, ActionType} from './constants.js';
 export class HighlightAnnotation {
 
     constructor(span, range, color){
-        console.log
         this.span = span;
         this.range = range;
         this.color = color;
@@ -15,6 +14,7 @@ export class HighlightAnnotation {
         this.span.style.backgroundColor = this.color;
         this.range.surroundContents(this.span);        //need to place into a try...catch for Error: Failed to execute 'surroundContents' on 'Range': The Range has partially selected a non-Text node
     }
+
     removeHighlight(){
 
     }
@@ -44,14 +44,40 @@ export class TextstyleAnnotation{
         this.range = range;
         this.type = type;
     }
-    showTextstyle(){}
+
+    showTextstyle(){
+
+        switch(this.type){
+            case TextstyleType.BOLD:
+                this.showBold();
+                break;
+            case TextstyleType.UNDERLINE:
+                this.showUnderline();
+                break;
+            case TextstyleType.ITALIC:
+                this.showItalic();
+                break;
+        }
+    }
+
+    showBold(){
+        this.span.style.fontWeight = 'bold';
+        this.range.surroundContents(this.span);
+    }
+    showUnderline(){
+        this.span.style.textDecoration = 'underline';
+        this.range.surroundContents(this.span);
+    }
+    showItalic(){
+        this.span.style.fontStyle = 'italic';
+        this.range.surroundContents(this.span);
+    }
     removeTextstyle(){}
 }
 
 
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-
 
     const selection = window.getSelection();
     if (selection.rangeCount > 0){
@@ -76,11 +102,5 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
     }
 });
-
-
-
-
-
-
 
 
