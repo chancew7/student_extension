@@ -1,23 +1,35 @@
 
 //background.js
 
+import { TextstyleType, ActionType } from "./constants.js";
+
+
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
-        id: "annotate",
-        title: "Annotate",
+        id: ActionType.HIGHLIGHT,
+        title: "Highlight",
+        contexts: ["selection"]
+    });
+    chrome.contextMenus.create({
+        id: "textstyle",
+        title: "Textstyle",
         contexts: ["selection"]
     });
 });
 
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    if (info.menuItemId === "annotate"){
-
+    if (info.menuItemId === ActionType.HIGHLIGHT){
         chrome.tabs.sendMessage(tab.id, {
             action: "highlight",
-            color: "yellow"
+            highlightColor: "yellow"
         });
+    }
+    else if (info.menuItemId === "textstyle"){
+        chrome.tabs.sendMessage(tab.id, {
+            action: "textstyle",
 
+        });
     }
 });
 

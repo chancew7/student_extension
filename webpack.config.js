@@ -1,10 +1,15 @@
+
+
 const path = require('path');
 
 module.exports = {
-  entry: './scripts/content.js',  // Corrected entry path
+  entry: {
+    content: './scripts/content.js',
+    background: './scripts/background.js'  
+  },
   output: {
-    filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    filename: '[name].bundle.js'
   },
   mode: 'development',
   devtool: 'source-map',
@@ -19,7 +24,15 @@ module.exports = {
             presets: ['@babel/preset-env']
           }
         }
+      }, 
+      {
+        test: /\.js$/,
+        enforce: 'pre',
+        use: ['source-map-loader']
       }
     ]
+  },
+  resolve: {
+    extensions: ['.js']
   }
 };
