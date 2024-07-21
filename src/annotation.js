@@ -12,10 +12,8 @@ export class HighlightAnnotation {
     }
 
     showHighlight(){
-        //console.log("Span before insertion:", this.span);
-        //console.log("Range before surroundContents:", this.range.toString());
         this.span.style.backgroundColor = this.color;
-        this.range.surroundContents(this.span);
+        this.range.surroundContents(this.span);        //need to place into a try...catch for Error: Failed to execute 'surroundContents' on 'Range': The Range has partially selected a non-Text node
     }
     removeHighlight(){
 
@@ -80,26 +78,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 
-
-
-
-/*
-
-
-
-export function highlightSelectedText(color){
-    const selection = window.getSelection();
-        if (selection.rangeCount > 0){
-            const range = selection.getRangeAt(0);
-            const span = document.createElement('span');
-            span.style.backgroundColor = color;
-            range.surroundContents(span);
-        }
-}
-
-
-
-*/
 
 
 
