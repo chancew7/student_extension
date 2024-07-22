@@ -10,13 +10,16 @@ export class HighlightAnnotation {
         this.color = color;
     }
 
+
+    //need to place into a try...catch for Error: Failed to execute 'surroundContents' on 'Range': The Range has partially selected a non-Text node
+
     showHighlight(){
         this.span.style.backgroundColor = this.color;
-        this.range.surroundContents(this.span);        //need to place into a try...catch for Error: Failed to execute 'surroundContents' on 'Range': The Range has partially selected a non-Text node
+        this.range.surroundContents(this.span);        
     }
 
     removeHighlight(){
-
+        
     }
     
 }
