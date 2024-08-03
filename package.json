@@ -54,5 +54,8 @@
   "cypress": {
     "baseUrl": "http://localhost:8081",
     "chromeWebSecurity": false
+  },
+  "dependencies": {
+    "firebase": "^10.12.4"
   }
 }

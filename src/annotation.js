@@ -1,17 +1,18 @@
 
 
-import { TextstyleType, ActionType} from './constants.js';
+import { TextstyleType, ActionType, HighlightColors} from './constants.js';
+
+
+//handle: the Range has partially selected a non-Text node
+
 
 export class HighlightAnnotation {
 
-    constructor(span, range, color){
+    constructor(span, range, color = HighlightColors.YELLOW){
         this.span = span;
         this.range = range;
         this.color = color;
     }
-
-
-    //need to place into a try...catch for Error: Failed to execute 'surroundContents' on 'Range': The Range has partially selected a non-Text node
 
     showHighlight(){
         this.span.style.backgroundColor = this.color;
@@ -19,7 +20,7 @@ export class HighlightAnnotation {
     }
 
     removeHighlight(){
-        
+ 
     }
     
 }
@@ -101,6 +102,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             case ActionType.TEXTSTYLE:
                 let textstyle = new TextstyleAnnotation(span, range, message.textstyleType);
                 textstyle.showTextstyle();
+                break;
+            case "remove_highlight":
+                let highlight_r = new HighlightAnnotation(span, range);
+                highlight_r.removeHighlight();
                 break;
         }
     }

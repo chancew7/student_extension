@@ -1,6 +1,5 @@
 
 
-
 {
 
     "manifest_version" : 3,
@@ -11,7 +10,8 @@
       "contextMenus",
       "activeTab",
       "scripting",
-      "commands"
+      "commands",
+      "identity"
     ],
 
     "commands": {
@@ -74,7 +74,7 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "pictures/*"
+        "pictures/*", "firebase-app.js", "firebase-firestore.js"
       ],
       "matches": ["<all_urls>", "*://localhost/*", "*://127.0.0.1/*"]
   

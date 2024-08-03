@@ -1,8 +1,24 @@
 
 //background.js
 
-import { TextstyleType, ActionType, HighlightColors, Id_preamble, CommandShortcuts, Titles } from "./constants.js";
+import { TextstyleType, ActionType, HighlightColors, IdPreamble, CommandShortcuts, Titles } from "./constants.js";
+import { markup } from "./markup.js";
 
+import { initializeApp } from "firebase/app";
+import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDwOQPRg62Tc8Tz6gt5Fj6FLvuwE9Lsz3U",
+    authDomain: "markup-database.firebaseapp.com",
+    projectId: "markup-database",
+    storageBucket: "markup-database.appspot.com",
+    messagingSenderId: "137230744992",
+    appId: "1:137230744992:web:952acf53f94a0a7e0378c5",
+    measurementId: "G-DLY6ZBHLF2"
+  };
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 chrome.runtime.onInstalled.addListener(() => {
 
@@ -13,27 +29,40 @@ chrome.runtime.onInstalled.addListener(() => {
         contexts: ["selection"]
     });
     chrome.contextMenus.create({
-        id: Id_preamble.HIGHLIGHT + HighlightColors.BLUE,
+        id: IdPreamble.HIGHLIGHT + HighlightColors.BLUE,
         title: "Blue",
         parentId: ActionType.HIGHLIGHT,
         contexts:["selection"]
     });
     chrome.contextMenus.create({
-        id: Id_preamble.HIGHLIGHT + HighlightColors.GREEN,
+        id: IdPreamble.HIGHLIGHT + HighlightColors.GREEN,
         title: "Green",
         parentId: ActionType.HIGHLIGHT,
         contexts:["selection"]
     });
     chrome.contextMenus.create({
-        id: Id_preamble.HIGHLIGHT + HighlightColors.RED,
+        id: IdPreamble.HIGHLIGHT + HighlightColors.RED,
         title: "Red",
         parentId: ActionType.HIGHLIGHT,
         contexts:["selection"]
     });
     chrome.contextMenus.create({
-        id: Id_preamble.HIGHLIGHT + HighlightColors.YELLOW,
+        id: IdPreamble.HIGHLIGHT + HighlightColors.YELLOW,
         title: Titles.HIGHLIGHT,
         parentId: ActionType.HIGHLIGHT,
+        contexts:["selection"]
+    });
+
+
+    chrome.contextMenus.create({
+        id: "remove_button",
+        title: "Clear Annotation",
+        contexts:["selection"]
+    });
+    chrome.contextMenus.create({
+        id: "remove_highlight",
+        title: "Clear Highlight",
+        parentId : "remove_button",
         contexts:["selection"]
     });
 
@@ -44,19 +73,19 @@ chrome.runtime.onInstalled.addListener(() => {
         contexts: ["selection"]
     });
     chrome.contextMenus.create({
-        id: Id_preamble.TEXTSTYLE + TextstyleType.BOLD,
+        id: IdPreamble.TEXTSTYLE + TextstyleType.BOLD,
         title: Titles.BOLD,
         parentId: ActionType.TEXTSTYLE,
         contexts:["selection"]
     });
     chrome.contextMenus.create({
-        id: Id_preamble.TEXTSTYLE + TextstyleType.ITALIC,
+        id: IdPreamble.TEXTSTYLE + TextstyleType.ITALIC,
         title: Titles.ITALIC,
         parentId: ActionType.TEXTSTYLE,
         contexts:["selection"]
     });
     chrome.contextMenus.create({
-        id: Id_preamble.TEXTSTYLE + TextstyleType.UNDERLINE,
+        id: IdPreamble.TEXTSTYLE + TextstyleType.UNDERLINE,
         title: Titles.UNDERLINE,
         parentId: ActionType.TEXTSTYLE,
         contexts:["selection"]
@@ -93,6 +122,11 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     else if (info.parentMenuItemId === ActionType.TEXTSTYLE){
         let textstyleType = getTextstyleType(info.menuItemId);
         sendTextstyleMessage(textstyleType, tab)
+    }
+    else if (info.parentMenuItemId === "remove_button"){
+        chrome.tabs.sendMessage(tab.id, {
+            action: "remove_highlight",
+        });
     }
 });
 

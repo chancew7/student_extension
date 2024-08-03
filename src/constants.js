@@ -18,7 +18,7 @@ export const HighlightColors = {
     DEFAULT: `#fcf766`
 }
 
-export const Id_preamble = {
+export const IdPreamble = {
     COMMENT: "comment_",
     HIGHLIGHT: "highlight_",
     TEXTSTYLE: "textstyle_"
