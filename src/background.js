@@ -20,6 +20,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+//context menu buttons 
 chrome.runtime.onInstalled.addListener(() => {
 
 
@@ -48,10 +49,11 @@ chrome.runtime.onInstalled.addListener(() => {
     });
     chrome.contextMenus.create({
         id: IdPreamble.HIGHLIGHT + HighlightColors.YELLOW,
-        title: Titles.HIGHLIGHT,
+        title: "Yellow" + " ".repeat(8) + CommandShortcuts.HIGHLIGHT,
         parentId: ActionType.HIGHLIGHT,
         contexts:["selection"]
     });
+
 
 
     chrome.contextMenus.create({
@@ -93,16 +95,24 @@ chrome.runtime.onInstalled.addListener(() => {
 
 });
 
+//chrome.webNavigation.onCompleted.addListener(() => {
+//initialize markup object in database
+//});
+
+
 function sendHighlightMessage(color, tab){
     chrome.tabs.sendMessage(tab.id, {
         action: ActionType.HIGHLIGHT,
-        highlightColor: color
+        highlightColor: color,
+        key : 'annotate'
+        
     });
 }
 function sendTextstyleMessage(textstyleType, tab){
     chrome.tabs.sendMessage(tab.id, {
         action: ActionType.TEXTSTYLE,
-        textstyleType: textstyleType
+        textstyleType: textstyleType,
+        key : 'annotate'
     });
 }
 function getHighlightColor(id){
@@ -110,6 +120,33 @@ function getHighlightColor(id){
 }
 function getTextstyleType(id){
     return id.split('_')[1];
+}
+function findExistingMarkup(){
+    return null
+}
+function loadMarkup(){
+    let existingMarkup = findExistingMarkup()
+    if (existingMarkup != null){
+        return existingMarkup;
+    }
+    else{
+        return new markup(getCurrentTabUrl, "password", null, null)
+    }
+}
+function getCurrentTabUrl(){
+    return new Promise((resolve, reject) => {
+        chrome.tabs.query({active:true, currentWindow: true}, (tabs) => {
+            if (chrome.runtime.lastError){
+                return reject(chrome.runtime.lastError);
+            }
+            if (tabs.length > 0){
+                resolve(tabs[0].url);
+            }
+            else{
+                reject("No active tab found");
+            }
+        });
+    });
 }
 
 
@@ -143,4 +180,18 @@ chrome.commands.onCommand.addListener((command) => {
     });
 
 });
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
+    if (message.action === 'highlight' && message.key === 'cmd_shortcut'){
+        chrome.tabs.query({active: true, currentWindow: true }, function (tabs){
+            if (tabs.length > 0){
+                const tab = tabs[0];
+                console.log("hello: " + message.color);
+                sendHighlightMessage(message.color, tab);
+            }
+        });
+    }
+});
+
+
 

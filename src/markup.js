@@ -1,18 +1,17 @@
 
 export class markup{
 
-    constructor (url,  markup_key = null, annotations, comments){
+    constructor (url,  markup_key = null, annotations = null, comments = null){
         this.url = url;
         this.markupKey = markup_key;
         this.annotations = annotations;
-        this.comments = comments;
     }
 
     addAnnotation(annotation){
         this.annotations.add(annotation);
     }
-    addComment(comment){
-        this.comments.add(comment);
+    removeAnnotation(annotation){
+        this.annotations.remove(annotation);
     }
     resetMarkup(){
         //for comment in comments comment.remove
