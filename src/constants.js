@@ -26,7 +26,7 @@ export const IdPreamble = {
 
 export const CommandShortcuts = {
     HIGHLIGHT: "Ctrl+Shift+H",
-    BOLD: "Ctrl+B",
+    BOLD: "Ctrl+Shift+B",
     ITALIC: "Ctrl+I",
     UNDERLINE: "Ctrl+Shift+U"
 }
@@ -35,12 +35,14 @@ const PreTitles = {
     HIGHLIGHT: "Highlight",
     BOLD: "Bold",
     ITALIC: "Italic",
-    UNDERLINE: "Underline"
+    UNDERLINE: "Underline",
+    COMMENT: "Comment"
 }
 
 export const Titles = {
     HIGHLIGHT: PreTitles.HIGHLIGHT + " ".repeat(10) + CommandShortcuts.HIGHLIGHT,
     BOLD: PreTitles.BOLD + " ".repeat(31) + CommandShortcuts.BOLD,
     ITALIC: PreTitles.ITALIC + " ".repeat(31) +CommandShortcuts.ITALIC,
-    UNDERLINE: PreTitles.UNDERLINE + " ".repeat(12) +CommandShortcuts.UNDERLINE
+    UNDERLINE: PreTitles.UNDERLINE + " ".repeat(12) +CommandShortcuts.UNDERLINE,
+    COMMENT: PreTitles.COMMENT + " ".repeat(15)
 }

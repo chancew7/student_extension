@@ -20,8 +20,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             switch(message.action){
                 case ActionType.COMMENT:
                     let comment = new CommentAnnotation(span, range, message.commentMessage);
-                    comment.setDefaultLocation();
-                    comment.showAnnotation();
+                    comment.createDefaultComment()
                     break;
                 case ActionType.HIGHLIGHT:
                     let highlight = new HighlightAnnotation(span, range, message.highlightColor);

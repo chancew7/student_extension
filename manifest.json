@@ -14,30 +14,6 @@
       "identity"
     ],
 
-    "commands": {
-      
-      "bold":{
-        "suggested_key":{
-          "default" : "Ctrl+B",
-          "mac" : "Command+B"
-        }, 
-        "description": "Bold selected text"
-      },
-      "italic":{
-        "suggested_key":{
-          "default" : "Ctrl+I",
-          "mac" : "Command+I"
-        }, 
-        "description": "Italicize selected text"
-      },
-      "underline":{
-        "suggested_key":{
-          "default" : "Ctrl+Shift+U",
-          "mac" : "Command+Shift+U"
-        }, 
-        "description": "Underline selected text"
-      }
-    },
     "host_permissions": [
       "*://localhost/*",
       "*://127.0.0.1/*"

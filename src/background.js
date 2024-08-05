@@ -55,20 +55,6 @@ chrome.runtime.onInstalled.addListener(() => {
     });
 
 
-
-    chrome.contextMenus.create({
-        id: "remove_button",
-        title: "Clear Annotation",
-        contexts:["selection"]
-    });
-    chrome.contextMenus.create({
-        id: "remove_highlight",
-        title: "Clear Highlight",
-        parentId : "remove_button",
-        contexts:["selection"]
-    });
-
-
     chrome.contextMenus.create({
         id: ActionType.TEXTSTYLE,
         title: "Textstyle",
@@ -93,6 +79,27 @@ chrome.runtime.onInstalled.addListener(() => {
         contexts:["selection"]
     });
 
+
+    chrome.contextMenus.create({
+        id: ActionType.COMMENT,
+        title: Titles.COMMENT,
+        contexts:["selection"]
+    });
+
+
+    chrome.contextMenus.create({
+        id: "remove_button",
+        title: "Clear Annotation",
+        contexts:["selection"]
+    });
+    chrome.contextMenus.create({
+        id: "remove_highlight",
+        title: "Clear Highlight",
+        parentId : "remove_button",
+        contexts:["selection"]
+    });
+
+
 });
 
 //chrome.webNavigation.onCompleted.addListener(() => {
@@ -112,6 +119,12 @@ function sendTextstyleMessage(textstyleType, tab){
     chrome.tabs.sendMessage(tab.id, {
         action: ActionType.TEXTSTYLE,
         textstyleType: textstyleType,
+        key : 'annotate'
+    });
+}
+function sendCommentMessage(tab){
+    chrome.tabs.sendMessage(tab.id, {
+        action: ActionType.COMMENT,
         key : 'annotate'
     });
 }
@@ -149,7 +162,6 @@ function getCurrentTabUrl(){
     });
 }
 
-
 chrome.contextMenus.onClicked.addListener((info, tab) => {
 
     if (info.parentMenuItemId === ActionType.HIGHLIGHT){ 
@@ -159,6 +171,9 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     else if (info.parentMenuItemId === ActionType.TEXTSTYLE){
         let textstyleType = getTextstyleType(info.menuItemId);
         sendTextstyleMessage(textstyleType, tab)
+    }
+    else if (info.menuItemId === ActionType.COMMENT){
+        sendCommentMessage(tab);
     }
     else if (info.parentMenuItemId === "remove_button"){
         chrome.tabs.sendMessage(tab.id, {
@@ -181,17 +196,30 @@ chrome.commands.onCommand.addListener((command) => {
 
 });
 
+
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
-    if (message.action === 'highlight' && message.key === 'cmd_shortcut'){
+    if (message.key === 'cmd_shortcut'){
         chrome.tabs.query({active: true, currentWindow: true }, function (tabs){
             if (tabs.length > 0){
                 const tab = tabs[0];
-                console.log("hello: " + message.color);
-                sendHighlightMessage(message.color, tab);
+
+                switch(message.action){
+                    case ActionType.HIGHLIGHT:
+                        sendHighlightMessage(message.color, tab);
+                        break;
+                    case ActionType.TEXTSTYLE:
+                        sendTextstyleMessage(TextstyleType[message.textstyleType.toUpperCase()], tab);
+                        break;
+                    case ActionType.COMMENT:
+                        sendCommentMessage(tab);
+                        break;
+                }
+
             }
         });
     }
 });
+
 
 
 

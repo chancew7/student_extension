@@ -25,7 +25,7 @@ export class HighlightAnnotation extends Annotation{
         this.range.surroundContents(this.span);        
     }
 
-    removAnnotation(){
+    removeAnnotation(){
  
     }
     
@@ -33,11 +33,27 @@ export class HighlightAnnotation extends Annotation{
 
 export class CommentAnnotation extends Annotation{
     location;
-    constructor(span, range, message){
+    constructor(span, range, message = "def mess"){
         super();
         this.span = span;
         this.range = range;
         this.message = message;
+    }
+    createDefaultComment(){
+        const commentBox = document.createElement('textarea');
+        commentBox.placeholder = this.message;
+        commentBox.style.position = 'fixed';
+        commentBox.style.top = '50px'; // Position it appropriately
+        commentBox.style.right = '50px'; // Adjust as needed
+        commentBox.style.width = '300px';
+        commentBox.style.height = '150px';
+        commentBox.style.zIndex = '1000'; // Ensure it is on top of other elements
+        commentBox.style.backgroundColor = '#fff';
+        commentBox.style.border = '2px solid #ccc';
+        commentBox.style.padding = '10px';
+        commentBox.style.boxShadow = '0 0 10px rgba(0,0,0,0.2)';
+      
+        document.body.appendChild(commentBox);
     }
     setDefaultLocation(){
     }
