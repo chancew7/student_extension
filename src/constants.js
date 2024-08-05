@@ -15,7 +15,9 @@ export const HighlightColors = {
     BLUE: `#66fcf3`,
     GREEN: `#60da57`,
     RED: `#E55A5A`,
-    DEFAULT: `#fcf766`
+    COMMENT_COLOR: `#FdF8C6`,
+    DEFAULT: `#fcf766`,
+    TRANSPARENT: 'transparent'
 }
 
 export const IdPreamble = {

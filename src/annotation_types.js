@@ -44,17 +44,14 @@ export class CommentAnnotation extends Annotation{
         this.commentBox.placeholder = this.message;
         this.setDefaultProperties();
         this.setDefaultLocation();
+        this.enableDragging(this.commentBox);
+
+        this.span.style.backgroundColor = HighlightColors.TRANSPARENT; 
+        this.range.surroundContents(this.span); 
+        this.addFocusListeners();
         document.body.appendChild(this.commentBox);
     }
 
-    setDefaultLocation(){
-        if (this.range && this.range.getBoundingClientRect){
-            const rect = this.range.getBoundingClientRect();
-            const topPosition = rect.top + window.scrollY - parseInt(this.commentBox.style.height);
-            this.commentBox.style.top = `${topPosition}px`;
-            this.commentBox.style.right = `20px`;
-        }
-    }
     setDefaultProperties(){
         this.commentBox.style.position = 'absolute';
         this.commentBox.style.width = '300px';
@@ -65,12 +62,70 @@ export class CommentAnnotation extends Annotation{
         this.commentBox.style.padding = '10px';
         this.commentBox.style.boxShadow = '0 0 10px rgba(0,0,0,0.2)';
     }
-    changeLocation(rightDistance, downDistance){
-        this.commentBox.right = rightDistance;
-        this.commentBox.top = downDistance;
+    setDefaultLocation(){
+        if (this.range && this.range.getBoundingClientRect){
+            const rect = this.range.getBoundingClientRect();
+            const topPosition = rect.top + window.scrollY - parseInt(this.commentBox.style.height);
+            this.commentBox.style.top = `${topPosition}px`;
+            this.commentBox.style.right = `20px`;
+        }
     }
-    
+    changeLocation(rightDistance, downDistance){
+        this.commentBox.style.right = rightDistance;
+        this.commentBox.style.top = downDistance;
+    }
+
+
+    enableDragging(element){
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        element.addEventListener('mousedown', (event) => {
+            isDragging = true;
+            offsetX = event.clientX - element.getBoundingClientRect().left;
+            offsetY = event.clientY - parseFloat(element.style.top);
+
+            const onMouseMove = (moveEvent) => {
+                if (isDragging){
+                    element.style.left = moveEvent.clientX - offsetX + 'px';
+                    element.style.top = moveEvent.clientY - offsetY + 'px';
+                }
+            };
+            const onMouseUp = () => {
+                isDragging = false;
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+    }
+
+
+    addFocusListeners() {
+        this.commentBox.addEventListener('focus', () => {
+            this.span.style.backgroundColor = HighlightColors.COMMENT_COLOR; // Highlight color
+        
+            const onKeyDown = (event) => {
+                if (event.key === 'Backspace' || event.key === 'Delete') {
+                    console.log("deletion attempted");
+                    this.removeAnnotation();
+                }
+            };
+        
+            this.commentBox.addEventListener('keydown', onKeyDown);
+
+            this.commentBox.addEventListener('blur', () => {
+                this.span.style.backgroundColor = 'transparent';
+                this.commentBox.removeEventListener('keydown', onKeyDown);
+            });
+        });
+    }
+
     removeAnnotation(){
+        this.commentBox.parentNode.removeChild(this.commentBox);
+        this.commentBox = null;
     }
 }
 

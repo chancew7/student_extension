@@ -19,8 +19,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
             switch(message.action){
                 case ActionType.COMMENT:
-                    let highlight_test = new HighlightAnnotation(span, range, HighlightColors.RED);
-                    highlight_test.showAnnotation();
+                    //let highlight_test = new HighlightAnnotation(span, range, HighlightColors.RED);
+                    //highlight_test.showAnnotation();
                     let comment1 = new CommentAnnotation(span, range, message.commentMessage);
                     comment1.showAnnotation()
                     break;
