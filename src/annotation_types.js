@@ -5,28 +5,37 @@ import { TextstyleType, ActionType, HighlightColors} from './constants.js';
 export class Annotation{
     constructor(){
     }
-    showAnnotation(){}
-    removeAnnotation(){}
+    performAnnotation(){}
     addToMarkup(){}
 }
 
 
 export class HighlightAnnotation extends Annotation{
 
-    constructor(span, range, color = HighlightColors.YELLOW){
+    constructor(span, range, color = HighlightColors.DEFAULT){
         super();
         this.span = span;
         this.range = range;
         this.color = color;
+        this.highlighted = false;
+        this.range.surroundContents(this.span);
     }
-
+    performAnnotation(){
+        if (!this.highlighted){
+            this.showAnnotation();
+        }
+        else{
+            this.removeAnnotation();
+        }
+    }
     showAnnotation(){
         this.span.style.backgroundColor = this.color;
-        this.range.surroundContents(this.span);        
+        this.highlighted = true;      
     }
 
     removeAnnotation(){
- 
+        this.span.style.backgroundColor = HighlightColors.TRANSPARENT;
+        this.highlighted = false;
     }
     
 }
@@ -135,34 +144,61 @@ export class TextstyleAnnotation extends Annotation{
         this.span = span;
         this.range = range;
         this.type = type;
+        this.textstyles = {
+            bolded: false,
+            italicized: false,
+            underlined: false
+        }
+        this.range.surroundContents(this.span);
     }
 
-    showAnnotation(){
+    performAnnotation(){
 
         switch(this.type){
             case TextstyleType.BOLD:
-                this.showBold();
+                if (!this.textstyles.bolded){
+                    this.showBold();
+                }
+                else{
+                    this.removeBold();
+                }
                 break;
             case TextstyleType.UNDERLINE:
-                this.showUnderline();
+                if(!this.textstyles.underlined){
+                    this.showUnderline();
+                }
+                else{
+                    this.removeUnderline
+                }
                 break;
             case TextstyleType.ITALIC:
-                this.showItalic();
+                if(!this.textstyles.italicized){
+                    this.showItalic();
+                }
+                else{
+                    this.removeItalic();
+                }
                 break;
         }
     }
 
     showBold(){
         this.span.style.fontWeight = 'bold';
-        this.range.surroundContents(this.span);
+    }
+    removeBold(){
+
     }
     showUnderline(){
         this.span.style.textDecoration = 'underline';
-        this.range.surroundContents(this.span);
+    }
+    removeUnderline(){
+
     }
     showItalic(){
         this.span.style.fontStyle = 'italic';
-        this.range.surroundContents(this.span);
     }
-    removeAnnotation(){}
+    removeItalic(){
+
+    }
+    
 }
