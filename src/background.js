@@ -125,6 +125,7 @@ function sendTextstyleMessage(textstyleType, tab){
 function sendCommentMessage(tab){
     chrome.tabs.sendMessage(tab.id, {
         action: ActionType.COMMENT,
+        commentMessage: "type to enter text",
         key : 'annotate'
     });
 }
@@ -180,20 +181,6 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
             action: "remove_highlight",
         });
     }
-});
-
-chrome.commands.onCommand.addListener((command) => {
-
-    chrome.tabs.query({active:true, currentWindow:true}, (tabs) => {
-        const tab = tabs[0];
-        if (command === "highlight"){
-            sendHighlightMessage(HighlightColors.DEFAULT, tab);
-        }
-        else if (command === "bold" || command === "underline" || command === "italic"){
-            sendTextstyleMessage(TextstyleType[command.toUpperCase()],tab);
-        }
-    });
-
 });
 
 

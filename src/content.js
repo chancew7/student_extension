@@ -21,6 +21,10 @@ document.addEventListener('keydown', function(event){
     else if(event.ctrlKey && event.code === 'KeyI'){
         chrome.runtime.sendMessage({action: ActionType.TEXTSTYLE, textstyleType: TextstyleType.ITALIC, key: "cmd_shortcut"})
     }
+    else if (event.ctrlKey && event.shiftKey && event.code === 'KeyC'){
+        event.preventDefault();
+        chrome.runtime.sendMessage({action: ActionType.COMMENT, key: "cmd_shortcut"})
+    }
     
     else if (event.ctrlKey && event.shiftKey && event.code === 'KeyH'){
         chrome.runtime.sendMessage({action: ActionType.HIGHLIGHT, color: HighlightColors.DEFAULT, key: "cmd_shortcut"});

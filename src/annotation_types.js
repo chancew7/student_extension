@@ -32,35 +32,44 @@ export class HighlightAnnotation extends Annotation{
 }
 
 export class CommentAnnotation extends Annotation{
-    location;
-    constructor(span, range, message = "def mess"){
+    constructor(span, range, message = "default message"){
         super();
         this.span = span;
         this.range = range;
         this.message = message;
+        this.commentBox = document.createElement('textarea')
     }
-    createDefaultComment(){
-        const commentBox = document.createElement('textarea');
-        commentBox.placeholder = this.message;
-        commentBox.style.position = 'fixed';
-        commentBox.style.top = '50px'; // Position it appropriately
-        commentBox.style.right = '50px'; // Adjust as needed
-        commentBox.style.width = '300px';
-        commentBox.style.height = '150px';
-        commentBox.style.zIndex = '1000'; // Ensure it is on top of other elements
-        commentBox.style.backgroundColor = '#fff';
-        commentBox.style.border = '2px solid #ccc';
-        commentBox.style.padding = '10px';
-        commentBox.style.boxShadow = '0 0 10px rgba(0,0,0,0.2)';
-      
-        document.body.appendChild(commentBox);
-    }
-    setDefaultLocation(){
-    }
-    changeLocation(){
-    }
+
     showAnnotation(){
+        this.commentBox.placeholder = this.message;
+        this.setDefaultProperties();
+        this.setDefaultLocation();
+        document.body.appendChild(this.commentBox);
     }
+
+    setDefaultLocation(){
+        if (this.range && this.range.getBoundingClientRect){
+            const rect = this.range.getBoundingClientRect();
+            const topPosition = rect.top + window.scrollY - parseInt(this.commentBox.style.height);
+            this.commentBox.style.top = `${topPosition}px`;
+            this.commentBox.style.right = `20px`;
+        }
+    }
+    setDefaultProperties(){
+        this.commentBox.style.position = 'absolute';
+        this.commentBox.style.width = '300px';
+        this.commentBox.style.height = '150px';
+        this.commentBox.style.zIndex = '1000';
+        this.commentBox.style.backgroundColor = '#fff';
+        this.commentBox.style.border = '2px solid #ccc';
+        this.commentBox.style.padding = '10px';
+        this.commentBox.style.boxShadow = '0 0 10px rgba(0,0,0,0.2)';
+    }
+    changeLocation(rightDistance, downDistance){
+        this.commentBox.right = rightDistance;
+        this.commentBox.top = downDistance;
+    }
+    
     removeAnnotation(){
     }
 }
