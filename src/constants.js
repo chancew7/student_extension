@@ -1,7 +1,8 @@
 export const ActionType = {
     COMMENT: "comment",
     HIGHLIGHT: "highlight",
-    TEXTSTYLE: "textstyle"
+    TEXTSTYLE: "textstyle",
+    CLEAR: "clear"
 }
 
 export const TextstyleType = {
@@ -17,7 +18,7 @@ export const HighlightColors = {
     RED: `#E55A5A`,
     COMMENT_COLOR: `#FdF8C6`,
     DEFAULT: `#fcf766`,
-    TRANSPARENT: 'transparent'
+    TRANSPARENT: '#FFFFFF'
 }
 
 export const IdPreamble = {
@@ -45,6 +46,6 @@ export const Titles = {
     HIGHLIGHT: PreTitles.HIGHLIGHT + " ".repeat(10) + CommandShortcuts.HIGHLIGHT,
     BOLD: PreTitles.BOLD + " ".repeat(31) + CommandShortcuts.BOLD,
     ITALIC: PreTitles.ITALIC + " ".repeat(31) +CommandShortcuts.ITALIC,
-    UNDERLINE: PreTitles.UNDERLINE + " ".repeat(12) +CommandShortcuts.UNDERLINE,
+    UNDERLINE: PreTitles.UNDERLINE + " ".repeat(25) +CommandShortcuts.UNDERLINE,
     COMMENT: PreTitles.COMMENT + " ".repeat(15)
 }

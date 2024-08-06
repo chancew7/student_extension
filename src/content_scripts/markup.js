@@ -19,6 +19,7 @@ export class markup{
         comments.clear();
         annotations.clear();
     }
+
     toJSON() {
         return {
           url: this.url,

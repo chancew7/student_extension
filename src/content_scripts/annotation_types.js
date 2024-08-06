@@ -1,24 +1,32 @@
 
-import { TextstyleType, ActionType, HighlightColors} from './constants.js';
+
+import * as constants from "../constants.js";
 
 
 export class Annotation{
-    constructor(){
+    constructor(span, range){
+        this.span = span;
+        this.range = range;
+        this.range.surroundContents(this.span);
     }
     performAnnotation(){}
     addToMarkup(){}
+    clearAll(){
+        this.span.style.backgroundColor = constants.HighlightColors.TRANSPARENT;
+        this.span.style.fontStyle = 'normal';
+        this.span.style.textDecoration = 'none';
+        this.span.style.fontWeight = 'normal';
+    }
 }
 
 
 export class HighlightAnnotation extends Annotation{
 
     constructor(span, range, color = HighlightColors.DEFAULT){
-        super();
-        this.span = span;
-        this.range = range;
+        super(span, range);
         this.color = color;
         this.highlighted = false;
-        this.range.surroundContents(this.span);
+        
     }
     performAnnotation(){
         if (!this.highlighted){
@@ -34,7 +42,7 @@ export class HighlightAnnotation extends Annotation{
     }
 
     removeAnnotation(){
-        this.span.style.backgroundColor = HighlightColors.TRANSPARENT;
+        this.span.style.backgroundColor = constants.HighlightColors.TRANSPARENT;
         this.highlighted = false;
     }
     
@@ -114,11 +122,10 @@ export class CommentAnnotation extends Annotation{
 
     addFocusListeners() {
         this.commentBox.addEventListener('focus', () => {
-            this.span.style.backgroundColor = HighlightColors.COMMENT_COLOR; // Highlight color
+            this.span.style.backgroundColor = constants.HighlightColors.COMMENT_COLOR; 
         
             const onKeyDown = (event) => {
                 if (event.key === 'Backspace' || event.key === 'Delete') {
-                    console.log("deletion attempted");
                     this.removeAnnotation();
                 }
             };
@@ -140,22 +147,19 @@ export class CommentAnnotation extends Annotation{
 
 export class TextstyleAnnotation extends Annotation{
     constructor(span, range, type){
-        super();
-        this.span = span;
-        this.range = range;
+        super(span, range);
         this.type = type;
         this.textstyles = {
             bolded: false,
             italicized: false,
             underlined: false
         }
-        this.range.surroundContents(this.span);
     }
 
     performAnnotation(){
 
         switch(this.type){
-            case TextstyleType.BOLD:
+            case constants.TextstyleType.BOLD:
                 if (!this.textstyles.bolded){
                     this.showBold();
                 }
@@ -163,7 +167,7 @@ export class TextstyleAnnotation extends Annotation{
                     this.removeBold();
                 }
                 break;
-            case TextstyleType.UNDERLINE:
+            case constants.TextstyleType.UNDERLINE:
                 if(!this.textstyles.underlined){
                     this.showUnderline();
                 }
@@ -171,7 +175,7 @@ export class TextstyleAnnotation extends Annotation{
                     this.removeUnderline
                 }
                 break;
-            case TextstyleType.ITALIC:
+            case constants.TextstyleType.ITALIC:
                 if(!this.textstyles.italicized){
                     this.showItalic();
                 }
@@ -186,19 +190,19 @@ export class TextstyleAnnotation extends Annotation{
         this.span.style.fontWeight = 'bold';
     }
     removeBold(){
-
+        this.span.style.fontWeight = 'normal';
     }
     showUnderline(){
         this.span.style.textDecoration = 'underline';
     }
     removeUnderline(){
-
+        this.span.style.textDecoration = 'none';
     }
     showItalic(){
         this.span.style.fontStyle = 'italic';
     }
     removeItalic(){
-
+        this.span.style.fontStyle = 'normal';
     }
     
 }

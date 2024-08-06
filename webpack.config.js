@@ -4,8 +4,8 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    content: './src/content.js',
-    background: './src/background.js'  
+    content: './src/content_scripts/content.js',
+    background: './src/background_scripts/background.js'  
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
