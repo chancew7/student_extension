@@ -7,6 +7,7 @@
     "description" : "Base Level Extension", 
     "version" : "1.0",
     "permissions" : [
+      "webNavigation",
       "contextMenus",
       "activeTab",
       "scripting",

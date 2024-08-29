@@ -2,7 +2,15 @@ export const ActionType = {
     COMMENT: "comment",
     HIGHLIGHT: "highlight",
     TEXTSTYLE: "textstyle",
-    CLEAR: "clear"
+    CLEAR: "clear",
+    LOAD_MARKUP: "load_markup"
+}
+
+export const MessageKeys = {
+    KEY_COMMAND: 'cmd_shortcut', 
+    ANNOTATION: 'annotate',
+    MARKUP_MESSAGE: 'markup_message',
+    SAVE_ANNOTATION: 'save_annotation'
 }
 
 export const TextstyleType = {

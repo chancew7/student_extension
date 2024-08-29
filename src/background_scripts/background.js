@@ -3,14 +3,14 @@
 
 import * as constants from "../constants.js";
 import * as annotation_messages from './annotation_message.js';
+import {markup} from './markup.js';
 
 import { db } from './firebase-init.js';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 
 
 //context menu buttons 
 chrome.runtime.onInstalled.addListener(() => {
-
 
     chrome.contextMenus.create({
         id: constants.ActionType.HIGHLIGHT,
@@ -80,7 +80,6 @@ chrome.runtime.onInstalled.addListener(() => {
         contexts:["selection"]
     });
 
-
     chrome.contextMenus.create({
         id: "remove_button",
         title: "Clear Annotation",
@@ -95,11 +94,6 @@ chrome.runtime.onInstalled.addListener(() => {
 
 
 });
-//chrome.webNavigation.onCompleted.addListener(() => {
-//initialize markup object in database
-//});
-
-
 //context menu listeners
 chrome.contextMenus.onClicked.addListener((info, tab) => {
 
@@ -120,10 +114,11 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         });
     }
 });
-//key command listeners
+
+//message listeners
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 
-    if (message.key === 'cmd_shortcut'){
+    if (message.key === constants.MessageKeys.KEY_COMMAND){
         chrome.tabs.query({active: true, currentWindow: true }, function (tabs){
             if (tabs.length > 0){
                 const tab = tabs[0];
@@ -146,7 +141,66 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
             }
         });
     }
+    else if (message.key === constants.MessageKeys.SAVE_ANNOTATION){
+        console.log("annotationData = " + JSON.stringify(message.annotation, null, 2));
+        console.log("annotation data .markup_key: " + message.annotation.markup_key);
+
+        annotation_messages.saveAnnotationToDatabase(message.annotation);
+    }
+
 });
+//open url listener
+chrome.webNavigation.onCompleted.addListener(async (details) => {
+
+    if (details.frameId === 0){
+        const url = details.url;
+        
+        const markupKey = await loadMarkup(url);
+        if (markupKey == null){
+            console.log("page loaded with URL: " + url + " but no markup key");
+        }
+        else{
+            console.log("page loaded with URL: " + url + " markup key: " + markupKey);
+        }
+
+        chrome.tabs.sendMessage(details.tabId, {
+            key: constants.MessageKeys.MARKUP_MESSAGE,
+            action: constants.ActionType.LOAD_MARKUP,
+            markup_key: markupKey,
+            url: url
+        }, (response) => {
+            if (chrome.runtime.lastError 
+                && !chrome.runtime.lastError.message.includes("Could not establish connection. Receiving end does not exist")
+                && !chrome.runtime.lastError.message.includes("The message port closed before a response was received")
+            ) {
+                console.error("error sending message: " + chrome.runtime.lastError.message);
+            }
+        });
+        
+      
+    }
+});
+//markup querying
+async function loadMarkup(url){
+    try {
+        const q = query(collection(db, 'markups'), where ('url', '==', url));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty){
+            const doc = querySnapshot.docs[0];
+            const markupKey = doc.data().markup_key;
+            return markupKey;
+        }
+        else {
+            return null;
+        }
+    }
+    catch (error){
+        console.error("error querying", error);
+        throw new Error("failed to get markup");
+    }
+
+}
 
 
 

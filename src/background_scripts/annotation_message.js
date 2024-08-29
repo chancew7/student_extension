@@ -1,31 +1,56 @@
 
 import * as constants from "../constants.js";
 
+import { db } from './firebase-init.js';
+import { collection, query, where, getDocs, addDoc, doc, updateDoc, arrayUnion } from 'firebase/firestore';
+
+
+
 export function sendHighlightMessage(color, tab){
     chrome.tabs.sendMessage(tab.id, {
         action: constants.ActionType.HIGHLIGHT,
         highlightColor: color,
-        key : 'annotate'
+        key : constants.MessageKeys.ANNOTATION, 
+    }, (response) => {
+        if (chrome.runtime.lastError && !chrome.runtime.lastError.message.includes("Could not establish connection. Receiving end does not exist")
+            && !chrome.runtime.lastError.message.includes("The message port closed before a response was received")) {
+            console.error("error sending message" + chrome.runtime.lastError.message);
+        }
     });
 }
 export function sendTextstyleMessage(textstyleType, tab){
     chrome.tabs.sendMessage(tab.id, {
         action: constants.ActionType.TEXTSTYLE,
         textstyleType: textstyleType,
-        key : 'annotate'
+        key : constants.MessageKeys.ANNOTATION
+    }, (response) => {
+        if (chrome.runtime.lastError && !chrome.runtime.lastError.message.includes("Could not establish connection. Receiving end does not exist")
+            && !chrome.runtime.lastError.message.includes("The message port closed before a response was received")) {
+            console.error("error sending message" + chrome.runtime.lastError.message);
+        }
     });
 }
 export function sendCommentMessage(tab){
     chrome.tabs.sendMessage(tab.id, {
         action: constants.ActionType.COMMENT,
         commentMessage: "type to enter text",
-        key: 'annotate'
+        key: constants.MessageKeys.ANNOTATION
+    }, (response) => {
+        if (chrome.runtime.lastError && !chrome.runtime.lastError.message.includes("Could not establish connection. Receiving end does not exist")
+            && !chrome.runtime.lastError.message.includes("The message port closed before a response was received")) {
+            console.error("error sending message" + chrome.runtime.lastError.message);
+        }
     });
 }
 export function sendClearMessage(tab){
     chrome.tabs.sendMessage(tab.id, {
         action: constants.ActionType.CLEAR,
-        key: 'annotate'
+        key: constants.MessageKeys.ANNOTATION
+    }, (response) => {
+        if (chrome.runtime.lastError && !chrome.runtime.lastError.message.includes("Could not establish connection. Receiving end does not exist")
+            && !chrome.runtime.lastError.message.includes("The message port closed before a response was received")) {
+            console.error("error sending message" + chrome.runtime.lastError.message);
+        }
     });
 }
 export function getHighlightColor(id){
@@ -33,18 +58,6 @@ export function getHighlightColor(id){
 }
 export function getTextstyleType(id){
     return id.split('_')[1];
-}
-export function findExistingMarkup(){
-    return null
-}
-export function loadMarkup(){
-    let existingMarkup = findExistingMarkup()
-    if (existingMarkup != null){
-        return existingMarkup;
-    }
-    else{
-        return new markup(getCurrentTabUrl, "password", null, null)
-    }
 }
 export function getCurrentTabUrl(){
     return new Promise((resolve, reject) => {
@@ -61,3 +74,17 @@ export function getCurrentTabUrl(){
         });
     });
 }
+
+
+export async function saveAnnotationToDatabase(annotation){
+
+    console.log("before problem");
+    const markupDocRef = doc(db, 'markups', annotation.markup_key); 
+    console.log("after problem");
+
+        await updateDoc(markupDocRef, {
+            annotations: arrayUnion(annotation)
+        });
+}
+
+
