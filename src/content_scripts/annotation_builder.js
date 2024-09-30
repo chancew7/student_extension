@@ -9,7 +9,7 @@ import * as annotation_messages from '../background_scripts/annotation_message.j
 
 
 import { db } from '../background_scripts/firebase-init.js';
-import { collection, query, where, getDocs, addDoc, doc, setDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, getDoc, addDoc, doc, setDoc } from 'firebase/firestore';
 
 var markupKey = null;
 var url = null;
@@ -22,7 +22,6 @@ export function generateMarkupKey(){
 async function createMarkup(url){
 
     console.log("no existing markup, creating new");
-    console.log("url argument: " + url);
 
     const markupKey = generateMarkupKey();
 
@@ -39,26 +38,56 @@ async function createMarkup(url){
     return markupKey;
 }
 
+export function reimplementAnnotation(annotation){
+
+    const { startOffset, endOffset, startXpath, endXpath } = annotation;
+    
+    const startElement = getElementByXpath(startXpath);
+    const endElement = getElementByXpath(endXpath);
+
+    const range = document.createRange();
+    range.setStart(startElement, startOffset);
+    range.setEnd(endElement, endOffset);
+
+
+    const span = document.createElement('span');
+
+    switch(annotation.type){
+        case constants.ActionType.HIGHLIGHT:
+            console.log("working");
+
+            let highlight = new HighlightAnnotation(span, range, annotation.color, annotation.markup_key);
+            highlight.performAnnotation();
+            
+    }
+
+}
+
+function getElementByXpath(path){
+    return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+}
+
+
+
+
 chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
 
 
-    if (message.key === constants.MessageKeys.MARKUP_MESSAGE){
+    if (message.key === constants.MessageKeys.MARKUP_MESSAGE){ //an existing markup has been found, load and apply the annotations
         url = message.url;
 
-               //add code to do freaky loading of etc and stuff 
-        //loop through and then annotation_messages.sendhighlightmessage, etc based on cum
         if (message.markup_key){
             markupKey = message.markup_key;
 
 
             try{
-                const docRef = db.collection("markups").doc(markupKey);
-                const doc = await docRef.get();
+                const docRef = doc(db, 'markups', markupKey);
+                const docSnap = await getDoc(docRef);
 
-                if (doc.exists){
-                    const annotations = doc.data().annotations;
+                if (docSnap.exists()){
+                    const annotations = docSnap.data().annotations;
                     annotations.forEach(annotation => {
-                        console.log("this is an annotation");
+                        reimplementAnnotation(annotation);
                     });
                 }
             }

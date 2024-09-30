@@ -21,6 +21,8 @@ export class HighlightAnnotation extends Annotation{
         }
         this.addToMarkup();
     }
+
+
     addToMarkup(){
 
         const annotationData = this.toJson();
@@ -31,11 +33,11 @@ export class HighlightAnnotation extends Annotation{
         });
         
     }
-    removeAnnotation(){
-        this.span.style.backgroundColor = constants.HighlightColors.TRANSPARENT;
-        this.highlighted = false;
-    }
     toJson(){
+
+        this.startXpath = super.getUniqueXPath(this.range.startContainer);
+        this.endXpath = super.getUniqueXPath(this.range.endContainer);
+
 
         return {
             id: super.generateAnnotationId(),
@@ -43,9 +45,17 @@ export class HighlightAnnotation extends Annotation{
             startOffset: this.range.startOffset,
             endOffset: this.range.endOffset,
             text: this.range.toString(),
+            startXpath: this.startXpath,
+            endXpath: this.endXpath,
             markup_key: this.markup_key,
             color: this.color,
         }
+    }
+
+    
+    removeAnnotation(){
+        this.span.style.backgroundColor = constants.HighlightColors.TRANSPARENT;
+        this.highlighted = false;
     }
     showAnnotation(){
         this.span.style.backgroundColor = this.color;

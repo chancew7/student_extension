@@ -78,9 +78,7 @@ export function getCurrentTabUrl(){
 
 export async function saveAnnotationToDatabase(annotation){
 
-    console.log("before problem");
     const markupDocRef = doc(db, 'markups', annotation.markup_key); 
-    console.log("after problem");
 
         await updateDoc(markupDocRef, {
             annotations: arrayUnion(annotation)
